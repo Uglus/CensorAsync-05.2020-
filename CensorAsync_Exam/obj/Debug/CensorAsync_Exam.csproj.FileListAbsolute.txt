@@ -1,0 +1,30 @@
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\bin\Debug\CensorAsync_Exam.exe.config
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\bin\Debug\CensorAsync_Exam.exe
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\bin\Debug\CensorAsync_Exam.pdb
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.csprojAssemblyReference.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\MainWindow.g.cs
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\App.g.cs
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam_MarkupCompile.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam_MarkupCompile.lref
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\MainWindow.baml
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.g.resources
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.Properties.Resources.resources
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.csproj.GenerateResource.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.csproj.CoreCompileInputs.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.exe
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.pdb
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\bin\Debug\CensorAsync_Exam.exe.config
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\bin\Debug\CensorAsync_Exam.exe
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\bin\Debug\CensorAsync_Exam.pdb
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.csprojAssemblyReference.cache
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\MainWindow.g.cs
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\App.g.cs
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam_MarkupCompile.cache
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam_MarkupCompile.lref
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\MainWindow.baml
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.g.resources
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.Properties.Resources.resources
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.csproj.GenerateResource.cache
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.csproj.CoreCompileInputs.cache
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.exe
+E:\C# проекти\CensorAsync_Exam\CensorAsync_Exam\obj\Debug\CensorAsync_Exam.pdb

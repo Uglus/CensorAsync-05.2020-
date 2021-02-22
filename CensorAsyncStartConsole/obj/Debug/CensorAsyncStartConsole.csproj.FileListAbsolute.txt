@@ -1,0 +1,7 @@
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\bin\Debug\CensorAsyncStartConsole.exe.config
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\bin\Debug\CensorAsyncStartConsole.exe
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\bin\Debug\CensorAsyncStartConsole.pdb
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\obj\Debug\CensorAsyncStartConsole.csprojAssemblyReference.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\obj\Debug\CensorAsyncStartConsole.csproj.CoreCompileInputs.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\obj\Debug\CensorAsyncStartConsole.exe
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncStartConsole\obj\Debug\CensorAsyncStartConsole.pdb

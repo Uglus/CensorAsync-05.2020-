@@ -1,0 +1,7 @@
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\obj\Debug\CensorAsyncConsole_Exam.csprojAssemblyReference.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\obj\Debug\CensorAsyncConsole_Exam.csproj.CoreCompileInputs.cache
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\bin\Debug\CensorAsyncConsole_Exam.exe.config
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\bin\Debug\CensorAsyncConsole_Exam.exe
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\bin\Debug\CensorAsyncConsole_Exam.pdb
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\obj\Debug\CensorAsyncConsole_Exam.exe
+C:\Users\Uglus\OneDrive\Документи\Visual Studio 2017\Projects\CensorAsync_Exam\CensorAsyncConsole_Exam\obj\Debug\CensorAsyncConsole_Exam.pdb

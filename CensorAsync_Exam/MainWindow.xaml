@@ -1,0 +1,61 @@
+﻿<Window x:Class="CensorAsync_Exam.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CensorAsync_Exam"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="0" Grid.ColumnSpan="3" Background="#FFEFFCFF">
+        </WrapPanel>
+        <WrapPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">
+            <Label Content="Сканувати з:"/>
+            <ComboBox x:Name="comboDisks" Width="250" Height="25" />
+        </WrapPanel>
+
+        <WrapPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center">
+            <Label Content="Статус:"/>
+            <ProgressBar x:Name="progressStatus" Width="250" Height="25"/>
+            <Label x:Name="labelInfo" Content="" Width="250"
+               Grid.Column="1" Grid.Row="0"  VerticalAlignment="Bottom"/>
+        </WrapPanel>
+        
+        <WrapPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center">
+            <Label Content="Введіть слова" VerticalAlignment="Top"/>
+            <TextBox x:Name="boxWords" Width="250" Height="25" VerticalAlignment="Top" />
+            <Button x:Name="btnStartSearch" Content="Сканувати" Width="75" Height="25"  Margin="180,15,0,0"
+                    Background="#FFC5F4FF" Visibility="Visible"  IsEnabled="True" Click="BtnStartSearch_Click"/>
+        </WrapPanel>
+               
+        <ListView x:Name="filesListView" Grid.Row="1" Grid.ColumnSpan="3" >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Ім'я" Width="150" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Шлях" Width="370" DisplayMemberBinding="{Binding Path}"/>
+                    <GridViewColumn Header="Розмір" Width="170" DisplayMemberBinding="{Binding Size}"/>
+                    <GridViewColumn Header="Кільскість замін" Width="100" DisplayMemberBinding="{Binding CountWords}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <WrapPanel Grid.Row="3" Grid.ColumnSpan="3" Background="#FFEFFCFF">
+
+        </WrapPanel>
+        <Button x:Name="btnResumeSearch" Content="Відновити" Grid.Column="2" Grid.Row="2" Click="BtnResumeSearch_Click" Background="#FFEFFCFF" IsEnabled="False"/>
+        <Button x:Name="btnStopSearch" Content="Зупинити" Grid.Column="1" Grid.Row="2" Click="BtnStopSearch_Click" Background="#FFEFFCFF" IsEnabled="False"/>
+        <Button x:Name="btnBreakSearch" Content="Закінчити" Grid.Column="0" Grid.Row="2" Click="BtnBreakSearch_Click" Background="#FFEFFCFF" IsEnabled="False"/>
+        
+    </Grid>
+</Window>

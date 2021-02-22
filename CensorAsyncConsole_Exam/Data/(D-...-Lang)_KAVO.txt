@@ -1,0 +1,790 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+using System.Threading;
+using System.IO;
+
+namespace CensorAsync_Exam
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        List<FileInfo> listAllFiles = new List<FileInfo>();
+        List<CensoredWord> listWordsCensored = new List<CensoredWord>();
+        List<FileCensor> listFilesCensored = new List<FileCensor>();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            progressStatus.Maximum = 0;
+            progressStatus.Value = 0;
+        }
+
+        private async void BtnStartSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            await Task.Run(() =>
+            {
+                InitBadWords();
+            });
+
+            await Task.Run(() =>
+            {
+                SearchFiles();
+            });
+        }
+
+        private async void BtnResumeSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void BtnStopSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void BtnBreakSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        static IEnumerable<string> GetText(string path)
+        {
+            string filesText = null;
+            string[] words = null;
+            try
+            {
+                filesText = File.ReadAllText(path);
+                words = filesText.Split(' ');
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
+            if (words != null)
+            {
+                for (int i = 0; i < words.Length; i++)
+                {
+                    yield return words[i];
+                }
+            }
+        }
+
+        private void SearchFiles()
+        {
+                Queue<string> queue = new Queue<string>();
+                try
+                {
+                    DriveInfo[] allDrives = DriveInfo.GetDrives();
+                    foreach (DriveInfo d in allDrives)
+                    {
+
+                    this.Dispatcher.Invoke((Action)delegate
+                    {
+                        progressStatus.Maximum++;
+                    });
+
+                    queue.Enqueue(d.Name);
+                        foreach (string subDir in Directory.GetDirectories(d.Name))
+                        {
+                        this.Dispatcher.Invoke((Action)delegate
+                        {
+                            progressStatus.Maximum++;
+                        });
+                        queue.Enqueue(subDir);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //  MessageBox.Show(ex.ToString());
+                }
+
+                //   MessageBox.Show(queue.Count.ToString());
+                string path = "";
+                while (queue.Count > 0)
+                {
+                this.Dispatcher.Invoke((Action)delegate
+                {
+                    progressStatus.Value++;
+                });
+                    path = queue.Dequeue();
+                    string[] files = null;
+                    try
+                    {
+                        files = Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories); // SearchOption.AllDirectories
+                }
+                    catch (Exception ex)
+                    {
+                        //    MessageBox.Show(ex.ToString());
+                    }
+                    if (files != null)
+                    {
+                        for (int i = 0; i < files.Length; i++)
+                        {
+                            this.Dispatcher.Invoke((Action)delegate
+                            {
+                                this.labelInfo.Content = files[i];
+                            });
+
+                            FileInfo fileInfo = new FileInfo(files[i]);
+                            string fileName = fileInfo.Name;
+                            string[] dirs = fileInfo.DirectoryName.Split('\\', ':');
+                            string fileCopyName = $"({dirs[0]}-...-{dirs[dirs.Length-1]})_{fileName}";// $"{i}_{fileName}";// 
+                            string fileCopyPath = $@"..\..\Data\{fileCopyName}";
+
+                            string textCensor = null;
+                            bool badWord = false;
+                            FileCensor fileCensor = new FileCensor(fileInfo.Name, fileInfo.DirectoryName, fileInfo.Length.ToString() + " bytes");
+                            foreach (string word in GetText(files[i]))
+                            {
+                                foreach (CensoredWord swearWord in listWordsCensored)
+                                {
+                                    if (word == swearWord.Word)
+                                    {
+                                        if (!File.Exists(fileCopyPath))
+                                        {
+                                            FileStream fs = new FileStream(fileCopyPath, FileMode.CreateNew);
+                                            fs.Close();
+                                        }
+
+                                        badWord = true;
+                                        textCensor += "******* ";
+                                        swearWord.Count++; // норм інкремент захуярить
+                                        fileCensor.CountWords++;
+                                        break;
+                                    }
+                                }
+
+                                if (badWord == false)
+                                    textCensor += word + " ";
+                                badWord = false;
+                            }
+
+                            //якщо створений файл, то є вибране слово в цьому файлі
+                            if (File.Exists(fileCopyPath))
+                            {
+                                FileStream fs = new FileStream(fileCopyPath, FileMode.Append);
+                                byte[] bdata = Encoding.Default.GetBytes(textCensor);
+                                fs.Write(bdata, 0, bdata.Length);
+                                fs.Close();
+
+кек ******* ******* ******* ******* ******* *******  ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* кек
+
+                            this.Dispatcher.Invoke((Action)delegate
+                            {
+                                filesListView.Items.Add(fileCensor);
+                            });
+
+                            }
+                        }
+                    }
+                }
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                this.labelInfo.Content = "Сканування завершено";
+            });
+
+        }
+
+        void InitBadWords()
+        {
+            string[] words = null;
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                words = boxWords.Text.Split(' ');
+            });
+            foreach(string word in words)
+            {
+                listWordsCensored.Add(new CensoredWord(word));
+            }
+        }
+
+
+        static IEnumerable<string> GetFiles(string path)
+        {
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue(path);
+
+            try
+            {
+                foreach (string subDir in Directory.GetDirectories(path))
+                {
+                    queue.Enqueue(subDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                //  MessageBox.Show(ex.ToString());
+            }
+
+            //   MessageBox.Show(queue.Count.ToString());
+
+            while (queue.Count > 0)
+            {
+                path = queue.Dequeue();
+                string[] files = null; лол
+                try
+                {
+                    files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
+                }
+                catch (Exception ex)
+                {
+                    //    MessageBox.Show(ex.ToString());
+                }
+                if (files != null)
+                {
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        yield return files[i];
+                       
+                    }
+                }
+            }
+        }
+
+    }
+}
+ using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+using System.Threading;
+using System.IO;
+
+namespace CensorAsync_Exam
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        List<FileInfo> listAllFiles = new List<FileInfo>();
+        List<CensoredWord> listWordsCensored = new List<CensoredWord>();
+        List<FileCensor> listFilesCensored = new List<FileCensor>();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            progressStatus.Maximum = 0;
+            progressStatus.Value = 0;
+        }
+
+        private async void BtnStartSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            await Task.Run(() =>
+            {
+                InitBadWords();
+            });
+
+            await Task.Run(() =>
+            {
+                SearchFiles();
+            });
+        }
+
+        private async void BtnResumeSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void BtnStopSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void BtnBreakSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        static IEnumerable<string> GetText(string path)
+        {
+            string filesText = null;
+            string[] words = null;
+            try
+            {
+                filesText = File.ReadAllText(path);
+                words = filesText.Split(' ');
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
+            if (words != null)
+            {
+                for (int i = 0; i < words.Length; i++)
+                {
+                    yield return words[i];
+                }
+            }
+        }
+
+        private void SearchFiles()
+        {
+                Queue<string> queue = new Queue<string>();
+                try
+                {
+                    DriveInfo[] allDrives = DriveInfo.GetDrives();
+                    foreach (DriveInfo d in allDrives)
+                    {
+
+                    this.Dispatcher.Invoke((Action)delegate
+                    {
+                        progressStatus.Maximum++;
+                    });
+
+                    queue.Enqueue(d.Name);
+                        foreach (string subDir in Directory.GetDirectories(d.Name))
+                        {
+                        this.Dispatcher.Invoke((Action)delegate
+                        {
+                            progressStatus.Maximum++;
+                        });
+                        queue.Enqueue(subDir);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //  MessageBox.Show(ex.ToString());
+                }
+
+                //   MessageBox.Show(queue.Count.ToString());
+                string path = "";
+                while (queue.Count > 0)
+                {
+                this.Dispatcher.Invoke((Action)delegate
+                {
+                    progressStatus.Value++;
+                });
+                    path = queue.Dequeue();
+                    string[] files = null;
+                    try
+                    {
+                        files = Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories); // SearchOption.AllDirectories
+                }
+                    catch (Exception ex)
+                    {
+                        //    MessageBox.Show(ex.ToString());
+                    }
+                    if (files != null)
+                    {
+                        for (int i = 0; i < files.Length; i++)
+                        {
+                            this.Dispatcher.Invoke((Action)delegate
+                            {
+                                this.labelInfo.Content = files[i];
+                            });
+
+                            FileInfo fileInfo = new FileInfo(files[i]);
+                            string fileName = fileInfo.Name;
+                            string[] dirs = fileInfo.DirectoryName.Split('\\', ':');
+                            string fileCopyName = $"({dirs[0]}-...-{dirs[dirs.Length-1]})_{fileName}";// $"{i}_{fileName}";// 
+                            string fileCopyPath = $@"..\..\Data\{fileCopyName}";
+
+                            string textCensor = null;
+                            bool badWord = false;
+                            FileCensor fileCensor = new FileCensor(fileInfo.Name, fileInfo.DirectoryName, fileInfo.Length.ToString() + " bytes");
+                            foreach (string word in GetText(files[i]))
+                            {
+                                foreach (CensoredWord swearWord in listWordsCensored)
+                                {
+                                    if (word == swearWord.Word)
+                                    {
+                                        if (!File.Exists(fileCopyPath))
+                                        {
+                                            FileStream fs = new FileStream(fileCopyPath, FileMode.CreateNew);
+                                            fs.Close();
+                                        }
+
+                                        badWord = true;
+                                        textCensor += "******* ";
+                                        swearWord.Count++; // норм інкремент захуярить
+                                        fileCensor.CountWords++;
+                                        break;
+                                    }
+                                }
+
+                                if (badWord == false)
+                                    textCensor += word + " ";
+                                badWord = false;
+                            }
+
+                            //якщо створений файл, то є вибране слово в цьому файлі
+                            if (File.Exists(fileCopyPath))
+                            {
+                                FileStream fs = new FileStream(fileCopyPath, FileMode.Append);
+                                byte[] bdata = Encoding.Default.GetBytes(textCensor);
+                                fs.Write(bdata, 0, bdata.Length);
+                                fs.Close();
+
+кек ******* ******* ******* ******* ******* *******  ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* кек
+
+                            this.Dispatcher.Invoke((Action)delegate
+                            {
+                                filesListView.Items.Add(fileCensor);
+                            });
+
+                            }
+                        }
+                    }
+                }
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                this.labelInfo.Content = "Сканування завершено";
+            });
+
+        }
+
+        void InitBadWords()
+        {
+            string[] words = null;
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                words = boxWords.Text.Split(' ');
+            });
+            foreach(string word in words)
+            {
+                listWordsCensored.Add(new CensoredWord(word));
+            }
+        }
+
+
+        static IEnumerable<string> GetFiles(string path)
+        {
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue(path);
+
+            try
+            {
+                foreach (string subDir in Directory.GetDirectories(path))
+                {
+                    queue.Enqueue(subDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                //  MessageBox.Show(ex.ToString());
+            }
+
+            //   MessageBox.Show(queue.Count.ToString());
+
+            while (queue.Count > 0)
+            {
+                path = queue.Dequeue();
+                string[] files = null; лол
+                try
+                {
+                    files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
+                }
+                catch (Exception ex)
+                {
+                    //    MessageBox.Show(ex.ToString());
+                }
+                if (files != null)
+                {
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        yield return files[i];
+                       
+                    }
+                }
+            }
+        }
+
+    }
+}
+ using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+using System.Threading;
+using System.IO;
+
+namespace CensorAsync_Exam
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        List<FileInfo> listAllFiles = new List<FileInfo>();
+        List<CensoredWord> listWordsCensored = new List<CensoredWord>();
+        List<FileCensor> listFilesCensored = new List<FileCensor>();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            progressStatus.Maximum = 0;
+            progressStatus.Value = 0;
+        }
+
+        private async void BtnStartSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            await Task.Run(() =>
+            {
+                InitBadWords();
+            });
+
+            await Task.Run(() =>
+            {
+                SearchFiles();
+            });
+        }
+
+        private async void BtnResumeSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void BtnStopSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private async void BtnBreakSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        static IEnumerable<string> GetText(string path)
+        {
+            string filesText = null;
+            string[] words = null;
+            try
+            {
+                filesText = File.ReadAllText(path);
+                words = filesText.Split(' ');
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex);
+            }
+            if (words != null)
+            {
+                for (int i = 0; i < words.Length; i++)
+                {
+                    yield return words[i];
+                }
+            }
+        }
+
+        private void SearchFiles()
+        {
+                Queue<string> queue = new Queue<string>();
+                try
+                {
+                    DriveInfo[] allDrives = DriveInfo.GetDrives();
+                    foreach (DriveInfo d in allDrives)
+                    {
+
+                    this.Dispatcher.Invoke((Action)delegate
+                    {
+                        progressStatus.Maximum++;
+                    });
+
+                    queue.Enqueue(d.Name);
+                        foreach (string subDir in Directory.GetDirectories(d.Name))
+                        {
+                        this.Dispatcher.Invoke((Action)delegate
+                        {
+                            progressStatus.Maximum++;
+                        });
+                        queue.Enqueue(subDir);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //  MessageBox.Show(ex.ToString());
+                }
+
+                //   MessageBox.Show(queue.Count.ToString());
+                string path = "";
+                while (queue.Count > 0)
+                {
+                this.Dispatcher.Invoke((Action)delegate
+                {
+                    progressStatus.Value++;
+                });
+                    path = queue.Dequeue();
+                    string[] files = null;
+                    try
+                    {
+                        files = Directory.GetFiles(path, "*.txt", SearchOption.AllDirectories); // SearchOption.AllDirectories
+                }
+                    catch (Exception ex)
+                    {
+                        //    MessageBox.Show(ex.ToString());
+                    }
+                    if (files != null)
+                    {
+                        for (int i = 0; i < files.Length; i++)
+                        {
+                            this.Dispatcher.Invoke((Action)delegate
+                            {
+                                this.labelInfo.Content = files[i];
+                            });
+
+                            FileInfo fileInfo = new FileInfo(files[i]);
+                            string fileName = fileInfo.Name;
+                            string[] dirs = fileInfo.DirectoryName.Split('\\', ':');
+                            string fileCopyName = $"({dirs[0]}-...-{dirs[dirs.Length-1]})_{fileName}";// $"{i}_{fileName}";// 
+                            string fileCopyPath = $@"..\..\Data\{fileCopyName}";
+
+                            string textCensor = null;
+                            bool badWord = false;
+                            FileCensor fileCensor = new FileCensor(fileInfo.Name, fileInfo.DirectoryName, fileInfo.Length.ToString() + " bytes");
+                            foreach (string word in GetText(files[i]))
+                            {
+                                foreach (CensoredWord swearWord in listWordsCensored)
+                                {
+                                    if (word == swearWord.Word)
+                                    {
+                                        if (!File.Exists(fileCopyPath))
+                                        {
+                                            FileStream fs = new FileStream(fileCopyPath, FileMode.CreateNew);
+                                            fs.Close();
+                                        }
+
+                                        badWord = true;
+                                        textCensor += "******* ";
+                                        swearWord.Count++; // норм інкремент захуярить
+                                        fileCensor.CountWords++;
+                                        break;
+                                    }
+                                }
+
+                                if (badWord == false)
+                                    textCensor += word + " ";
+                                badWord = false;
+                            }
+
+                            //якщо створений файл, то є вибране слово в цьому файлі
+                            if (File.Exists(fileCopyPath))
+                            {
+                                FileStream fs = new FileStream(fileCopyPath, FileMode.Append);
+                                byte[] bdata = Encoding.Default.GetBytes(textCensor);
+                                fs.Write(bdata, 0, bdata.Length);
+                                fs.Close();
+
+кек ******* ******* ******* ******* ******* *******  ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* ******* кек
+
+                            this.Dispatcher.Invoke((Action)delegate
+                            {
+                                filesListView.Items.Add(fileCensor);
+                            });
+
+                            }
+                        }
+                    }
+                }
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                this.labelInfo.Content = "Сканування завершено";
+            });
+
+        }
+
+        void InitBadWords()
+        {
+            string[] words = null;
+            this.Dispatcher.Invoke((Action)delegate
+            {
+                words = boxWords.Text.Split(' ');
+            });
+            foreach(string word in words)
+            {
+                listWordsCensored.Add(new CensoredWord(word));
+            }
+        }
+
+
+        static IEnumerable<string> GetFiles(string path)
+        {
+            Queue<string> queue = new Queue<string>();
+            queue.Enqueue(path);
+
+            try
+            {
+                foreach (string subDir in Directory.GetDirectories(path))
+                {
+                    queue.Enqueue(subDir);
+                }
+            }
+            catch (Exception ex)
+            {
+                //  MessageBox.Show(ex.ToString());
+            }
+
+            //   MessageBox.Show(queue.Count.ToString());
+
+            while (queue.Count > 0)
+            {
+                path = queue.Dequeue();
+                string[] files = null; лол
+                try
+                {
+                    files = Directory.GetFiles(path, "*.txt", SearchOption.TopDirectoryOnly);
+                }
+                catch (Exception ex)
+                {
+                    //    MessageBox.Show(ex.ToString());
+                }
+                if (files != null)
+                {
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        yield return files[i];
+                       
+                    }
+                }
+            }
+        }
+
+    }
+}
+ 

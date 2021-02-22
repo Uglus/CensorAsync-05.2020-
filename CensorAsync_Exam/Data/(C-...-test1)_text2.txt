@@ -1,0 +1,1 @@
+openFileDialog.Filter ******* ******* ******* = "TXT files (*.txt)|*.txt|TXT files (*.*)|*.*"; openFileDialog.Filter ******* ******* ******* = "TXT files (*.txt)|*.txt|TXT files (*.*)|*.*"; 
